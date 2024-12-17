@@ -27,18 +27,24 @@ new_data = st.text_area("Введите текст для разметки:")
 # Выбор метки
 label = st.selectbox("Выберите метку:", ["Царь", "Виталий", "Березин"])
 
-# Кнопка для сохранения
 if st.button("Сохранить разметку"):
     if new_data:
-        # Создаем новую строку данных
         new_row = pd.DataFrame({"data": [new_data], "label": [label]})
         markup = pd.concat([markup, new_row], ignore_index=True)
-        
-        # Сохраняем обновленные данные
         save_data(markup)
-        st.success("Данные сохранены!")
+        st.success("Данные сохранены")
     else:
-        st.error("Введите текст для разметки!")
+        st.error("Введите текст для разметки")
 
+# Кнопка для скачивания файла
 st.subheader("Сохраненные данные")
 st.write(markup)
+
+if not markup.empty:
+    csv = markup.to_csv(index=False)
+    st.download_button(
+        label="Скачать CSV",
+        data=csv,
+        file_name='markup.csv',
+        mime='text/csv',
+    )
